@@ -362,6 +362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 8
+  _jumpStrength: 5
   _verticalSpeed: 0
   controller: {fileID: 422397179}
 --- !u!143 &422397179

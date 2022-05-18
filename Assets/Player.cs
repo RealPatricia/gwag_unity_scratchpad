@@ -9,6 +9,7 @@ public class Player : Actor
     private CharacterController controller;
     protected PlayerInputMap pim;
     private InputAction move;
+    private InputAction jump;
     private Vector3 moveDirection = Vector3.zero;
     private Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0.0f);
     private Vector3 playerTranslation = Vector3.zero;
@@ -27,11 +28,15 @@ public class Player : Actor
     {
         move = pim.Player.Move;
         move.Enable();
+
+        jump = pim.Player.Jump;
+        jump.Enable();
     }
 
     private void OnDisable()
     {
         move.Disable();
+        jump.Disable();
     }
 
     void Start()
@@ -61,13 +66,21 @@ public class Player : Actor
             playerTranslation.Normalize();
         }
 
-        if (controller.isGrounded == false)
+        if (controller.isGrounded == true)
         {
-            _verticalSpeed -= _gravity * Time.deltaTime;
+            if (jump.triggered)
+            {
+                Debug.Log("Jump was pressed");
+                _verticalSpeed = _jumpStrength;
+            }
+            else
+            {
+                _verticalSpeed = -1.0f;
+            }
         }
         else
         {
-            _verticalSpeed = -0.01f;
+            _verticalSpeed -= _gravity * Time.deltaTime;
         }
         playerTranslation.y = _verticalSpeed;
         controller.Move(playerTranslation * _speed * Time.deltaTime);
