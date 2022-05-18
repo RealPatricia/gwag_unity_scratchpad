@@ -34,14 +34,14 @@ public class Player : Actor
 
     void Start()
     {
-        camRig = transform.Find("Camera Rig").gameObject;
+        camRig = transform.Find("PlayerCameraRig").gameObject;
         camRig.transform.SetParent(null, true);
 
-        model = transform.Find("Model").gameObject;
+        model = transform.Find("PlayerModel").gameObject;
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void LateUpdate()
     {
         facingDirection = Quaternion.AngleAxis(camRig.transform.localEulerAngles.y, Vector3.up);
         moveDirection = move.ReadValue<Vector2>();
