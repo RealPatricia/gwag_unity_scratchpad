@@ -59,8 +59,18 @@ public class Player : Actor
             transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
             playerTranslation = Quaternion.Euler(0f, camRig.transform.eulerAngles.y, 0f) * playerTranslation;
             playerTranslation.Normalize();
-            controller.Move(playerTranslation * _speed * Time.deltaTime);
         }
+
+        if (controller.isGrounded == false)
+        {
+            _verticalSpeed -= _gravity * Time.deltaTime;
+        }
+        else
+        {
+            _verticalSpeed = -0.01f;
+        }
+        playerTranslation.y = _verticalSpeed;
+        controller.Move(playerTranslation * _speed * Time.deltaTime);
 
         camRig.transform.SetPositionAndRotation(transform.position + cameraOffset, camRig.transform.rotation);
     }
