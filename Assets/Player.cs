@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class Player : Actor
 {
+    [SerializeField]
+    private CharacterController controller;
     protected PlayerInputMap pim;
     private InputAction move;
     private Vector3 moveDirection = Vector3.zero;
@@ -42,15 +44,23 @@ public class Player : Actor
 
     // Update is called once per frame
     void LateUpdate()
-    {
-        facingDirection = Quaternion.AngleAxis(camRig.transform.localEulerAngles.y, Vector3.up);
+    { 
         moveDirection = move.ReadValue<Vector2>();
-        moveDirection = moveDirection.normalized * _speed * Time.deltaTime;
+        moveDirection = moveDirection.normalized;
+
         playerTranslation.x = moveDirection.x;
         playerTranslation.z = moveDirection.y;
+        playerTranslation.y = 0.0f;
+        playerTranslation.Normalize();
 
-        playerTranslation = facingDirection * playerTranslation;
-        transform.Translate(playerTranslation);
+        if (moveDirection.magnitude >= 0.1)
+        {
+            float targetAngle = Mathf.Atan2(playerTranslation.x, playerTranslation.z) * Mathf.Rad2Deg + camRig.transform.eulerAngles.y;
+            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+            playerTranslation = Quaternion.Euler(0f, camRig.transform.eulerAngles.y, 0f) * playerTranslation;
+            playerTranslation.Normalize();
+            controller.Move(playerTranslation * _speed * Time.deltaTime);
+        }
 
         camRig.transform.SetPositionAndRotation(transform.position + cameraOffset, camRig.transform.rotation);
     }
